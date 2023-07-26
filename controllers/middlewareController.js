@@ -8,14 +8,14 @@ const middlewareController = {
             const accessToken = token.split(' ')[1]; // Access token: "Bearer ..."
             jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
                 if (err) {
-                    res.status(403).json('Token is invalid!'); // Forbidden
+                    return res.status(403).json('Token is invalid!'); // Forbidden
                 }
 
                 req.user = user;
                 next();
             });
         } else {
-            res.status(401).json("You're not authenticated!");
+            return res.status(401).json("You're not authenticated!");
         }
     },
     // VERIFY TOKEN AND ADMIN AUTH
@@ -24,7 +24,9 @@ const middlewareController = {
             if (req.user.id === req.params.id || req.user.role === 'admin') {
                 next();
             } else {
-                res.status(403).json("You're not allowed to delete other!");
+                return res
+                    .status(403)
+                    .json("You're not allowed to delete other!");
             }
         });
     }
